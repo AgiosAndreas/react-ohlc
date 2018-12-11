@@ -1,0 +1,19 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "JSONP server",
+  "repository": "https://github.com/gaech/react-ohlc",
+  "author": "Andrei Gaevksii",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts"
+  },
+  "devDependencies": {
+    "nodemon": "1.18.8",
+    "ts-node": "7.0.1",
+    "typescript": "3.2.2"
+  },
+  "dependencies": {
+    "express": "4.16.4"
+  }
+}
