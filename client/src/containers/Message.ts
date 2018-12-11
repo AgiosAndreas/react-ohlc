@@ -15,21 +15,28 @@ export function mapStateToProps (state: AppState): StateProps {
 }
 
 function stateToMessage (state: AppState) {
-  let message = ''
-
   if (state.loading) {
-    message = 'Loading...'
+    return 'Loading...'
   }
 
   if (state.error) {
-    message = `Error occured. ${state.error}`
+    return `Error occured. ${state.error}`
   }
 
   if (state.data.length) {
-    // TODO выводить результат подсчета
+    const stat = state.data
+      .map((res) => res.ohlc)
+      .reduce((acc,rows) => acc.concat(rows))
+      .reduce((acc, row) => {
+        acc.h = Math.max(acc.h, row.h)
+        acc.l = Math.min(acc.l, row.l)
+        return acc
+      }, { h: Number.MIN_VALUE, l: Number.MAX_VALUE })
+
+    return `High ${stat.h} Low ${stat.l}`
   }
 
-  return message
+  return ''
 }
 
 export default connect(mapStateToProps)(Message)

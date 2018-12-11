@@ -4,7 +4,7 @@ const app = express()
 
 function generateData () {
 
-  const rowsCount = Math.floor(10 * Math.random()) + 1
+  const rowsCount = Math.floor(3 * Math.random()) + 1
 
   const rows = []
 

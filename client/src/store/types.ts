@@ -13,7 +13,7 @@ export interface AppState {
   endYear?: number
   loading: boolean
   error?: any
-  data: []
+  data: ApiResponse[]
 }
 
 export interface OhlcData {
@@ -25,5 +25,5 @@ export interface OhlcData {
 
 export interface ApiResponse {
   status: number
-  ohlc: OhlcData
+  ohlc: OhlcData[]
 }

@@ -25,11 +25,11 @@ export const rootReducer: Reducer<AppState> = (state = intialState, action) => {
       return { ...state, loading: false, data: action.payload }
 
     case ActionTypes.ChangeStartYear: {
-      return { ...state, startYear: action.payload }
+      return { ...state, startYear: action.payload, data: [] }
     }
 
     case ActionTypes.ChangeEndYear: {
-      return { ...state, endYear: action.payload }
+      return { ...state, endYear: action.payload, data: [] }
     }
   }
   return state

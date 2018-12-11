@@ -12,9 +12,7 @@ function fetchData (year: number) {
   return fetchJsonp(
     `${API_ENDPOINT}/${year}`
   ).then(
-    res => {
-      return res.json()
-    }
+    res => res.json()
   )
 }
 
