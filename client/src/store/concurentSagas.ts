@@ -18,18 +18,17 @@ function fetchData (year: number) {
   )
 }
 
-const workerFactory = (workerId: number) =>
 function* worker (jobs: JobsChannel) {
   while (true) {
+    // ждем задачи
     const { payload } = yield take(jobs)
-    // process the request
-    try {
-      const data: ApiResponse = yield call(fetchData, payload)
 
-      console.log(`Worker ${workerId}`)
+    try {
+      // получаем данные и передаем их
+      const data: ApiResponse = yield call(fetchData, payload)
       yield put(chunkFetchCompleted(data))
     } catch (err) {
-      // cancel jobs
+      // останавливаем обработку
       if (err instanceof Error) {
         yield put(fetchError(err.message))
       } else {
@@ -40,52 +39,53 @@ function* worker (jobs: JobsChannel) {
 }
 
 function* initQueue (concurency: number) {
+  // создаем канал, куда будем передавать задачи на обработку
   const jobs: JobsChannel = yield call(channel, buffers.expanding())
 
-  function* watcher () {
+  function* startQueue () {
     for (let i = 1; i <= concurency; i++) {
-      yield fork(workerFactory(i), jobs)
+      yield fork(worker, jobs)
     }
   }
 
-  return {
-    watcher,
-    jobs
-  }
+  return { startQueue, jobs }
 }
 
 function* handleFetch (action: AnyAction) {
   const { startYear, endYear } = action.payload
 
-  const { watcher, jobs } = yield initQueue(WORKERS_COUNT)
+  const { startQueue, jobs } = yield initQueue(WORKERS_COUNT)
 
-  const workerTask = yield fork(watcher)
+  const queueTask = yield fork(startQueue)
 
-  // create jobs from request
   const totalTasks = endYear - startYear + 1
   for (let year = startYear; year <= endYear; year++) {
     yield put(jobs, { payload: year })
   }
 
-  let data: ApiResponse[] = []
+  let dataBuffer: ApiResponse[] = []
   while (true) {
+    // ждем данные или ошибку
     const { chunkFetchCompleted, fetchError } = yield race({
       chunkFetchCompleted: take(ActionTypes.ChunkFetchCompleted),
       fetchError: take(ActionTypes.FetchError)
     })
 
+    // Данные готовы
     if (chunkFetchCompleted) {
-      data.push(chunkFetchCompleted.payload)
+      dataBuffer.push(chunkFetchCompleted.payload)
 
-      if (totalTasks === data.length) {
-        yield cancel(workerTask)
-        yield put(fetchCompleted(data))
+      // Обработка завершена?
+      if (totalTasks === dataBuffer.length) {
+        yield cancel(queueTask)
+        yield put(fetchCompleted(dataBuffer))
         return
       }
     }
 
+    // Произошла ошибка
     if (fetchError) {
-      yield cancel(workerTask)
+      yield cancel(queueTask)
       return
     }
   }
