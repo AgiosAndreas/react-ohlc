@@ -3,7 +3,8 @@ export enum ActionTypes {
   ChangeEndYear = 'CHANGE_END_YEAR',
   FetchRequest = 'FETCH_REQUEST',
   FetchError = 'FETCH_ERROR',
-  FetchCompleted = 'FETCH_COMPLETED'
+  FetchCompleted = 'FETCH_COMPLETED',
+  ChunkFetchCompleted = 'CHUNK_FETCH_COMPLETED'
 }
 
 export interface AppState {

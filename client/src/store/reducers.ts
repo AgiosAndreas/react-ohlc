@@ -14,23 +14,27 @@ const intialState: AppState = {
 }
 
 export const rootReducer: Reducer<AppState> = (state = intialState, action) => {
+  console.log(action.type)
+  console.log(JSON.stringify(action.payload))
   switch (action.type) {
+    case ActionTypes.ChunkFetchCompleted:
+      const data = state.data.slice().concat(action.payload)
+      return { ...state, loading: true, error: null, data }
+
     case ActionTypes.FetchRequest:
       return { ...state, loading: true, error: null, data: [] }
 
     case ActionTypes.FetchError:
-      return { ...state, loading: false, error: action.payload }
+      return { ...state, loading: false, error: action.payload, data: [] }
 
     case ActionTypes.FetchCompleted:
       return { ...state, loading: false, data: action.payload }
 
-    case ActionTypes.ChangeStartYear: {
-      return { ...state, startYear: action.payload, data: [] }
-    }
+    case ActionTypes.ChangeStartYear:
+      return { ...state, startYear: action.payload, data: [], error: null }
 
-    case ActionTypes.ChangeEndYear: {
-      return { ...state, endYear: action.payload, data: [] }
-    }
+    case ActionTypes.ChangeEndYear:
+      return { ...state, endYear: action.payload, data: [], error: null }
   }
   return state
 }

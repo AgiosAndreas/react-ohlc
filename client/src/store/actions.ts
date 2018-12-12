@@ -12,4 +12,6 @@ export const fetchRequest = (startYear: number, endYear: number) =>
 
 export const fetchError = (error: any) => action(ActionTypes.FetchError, error)
 
+export const chunkFetchCompleted = (data: ApiResponse) => action(ActionTypes.ChunkFetchCompleted, data)
+
 export const fetchCompleted = (data: ApiResponse[]) => action(ActionTypes.FetchCompleted, data)
