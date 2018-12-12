@@ -14,13 +14,7 @@ const intialState: AppState = {
 }
 
 export const rootReducer: Reducer<AppState> = (state = intialState, action) => {
-  console.log(action.type)
-  console.log(JSON.stringify(action.payload))
   switch (action.type) {
-    case ActionTypes.ChunkFetchCompleted:
-      const data = state.data.slice().concat(action.payload)
-      return { ...state, loading: true, error: null, data }
-
     case ActionTypes.FetchRequest:
       return { ...state, loading: true, error: null, data: [] }
 
