@@ -38,12 +38,12 @@ function* worker (jobs: JobsChannel) {
   }
 }
 
-function* initQueue (concurency: number) {
+function* initQueue (workers: number) {
   // создаем канал, куда будем передавать задачи на обработку
   const jobs: JobsChannel = yield call(channel, buffers.expanding())
 
   function* startQueue () {
-    for (let i = 1; i <= concurency; i++) {
+    for (let i = 0; i < workers; i++) {
       yield fork(worker, jobs)
     }
   }
@@ -95,8 +95,8 @@ function* watchFetchRequest () {
   yield takeEvery(ActionTypes.FetchRequest, handleFetch)
 }
 
-function* concurentSaga () {
+function* concurrentSagas () {
   yield all([fork(watchFetchRequest)])
 }
 
-export default concurentSaga
+export default concurrentSagas
