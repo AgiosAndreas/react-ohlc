@@ -21,12 +21,14 @@ class Filter extends React.Component<Props> {
           type='text'
           disabled={this.props.loading}
           onChange={this.onStartYearChange}
+          placeholder={this.props.minYear.toString()}
         />
         -
         <input
           type='text'
           disabled={this.props.loading}
           onChange={this.onEndYearChange}
+          placeholder={this.props.maxYear.toString()}
         />
         <button disabled={!this.props.readyToFetch} onClick={this.fetchRequest}>
           Load
